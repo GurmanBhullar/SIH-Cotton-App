@@ -25,9 +25,9 @@ dependencies:
   firebase_analytics: ^4.0.2
   cloud_firestore: ^0.12.9+2
   intl: ^0.15.8
-  geolocator: ^3.0.1
   fluttertoast: ^3.1.2
-
+  geolocator: ^5.2.0
+  #drawerbehavior: ^0.0.4
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,325 +1,275 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ui_collections/model/models.dart';
+import 'package:flutter_ui_collections/ui/page_news.dart';
+import 'package:flutter_ui_collections/ui/page_profile.dart';
+import 'package:flutter_ui_collections/ui/page_profile.dart';
+import 'package:flutter_ui_collections/ui/page_news.dart';
 import 'package:flutter_ui_collections/utils/utils.dart';
-import './page_login.dart';
-import 'package:flutter_ui_collections/widgets/widgets.dart';
-import 'package:flutter_ui_collections/firebase.dart';
-import 'package:flutter_ui_collections/attdn.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_ui_collections/ui/page_login.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_ui_collections/widgets/gradient_text.dart';
 
 class SearchPage extends StatefulWidget {
+  String email;
+
+  SearchPage({this.email});
+
   @override
-  _SearchPageState createState() => _SearchPageState();
+  _SearchPageState createState() => _SearchPageState(email);
 }
 
 class _SearchPageState extends State<SearchPage> {
-  Screen size;
-  int _selectedIndex = 0;
-  List<Property> premiumList = List();
-  List<Property> featuredList = List();
-  var citiesList = [
-    "Operating System",
-    "DMS",
-    "Numerical Analysis",
-    "Mathematics",
-    "Material Science",
-  ];
+  String email;
+  String latitude, longitude;
+  String locationString = "Location Not Detected";
+  String city;
+
+  _SearchPageState(this.email);
+
+  void getLocation() async {
+    Position position = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    List<Placemark> p = await Geolocator()
+        .placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = p[0];
+    city = place.locality;
+    setState(() {
+      latitude = position.latitude.toString();
+      longitude = position.longitude.toString();
+      locationString = "You're in $city";
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    size = Screen(MediaQuery
-        .of(context)
-        .size);
-
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
-        title: Text("Present Sir", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color.fromRGBO(97, 10, 165, 0.6),),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Center(child: Text('Present Sir!!', style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w700
-              ),
-              ),
-              ),
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(97, 10, 165, 0.6),
-              ),
-            ),
-            ListTile(
-              leading: Icon(Icons.calendar_today),
-              title: Text('Timetable'),
-              onTap: () {
-
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () {},
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: ListTile(
-                leading: Icon(Icons.exit_to_app),
-                title: Text('Log Out'),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => LoginPage()));
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: AnnotatedRegion(
-        value: SystemUiOverlayStyle(
-            statusBarColor: backgroundColor,
-            statusBarBrightness: Brightness.dark,
-            statusBarIconBrightness: Brightness.dark,
-            systemNavigationBarIconBrightness: Brightness.dark,
-            systemNavigationBarColor: backgroundColor),
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[upperPart()],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-  Widget upperPart() {
-    return Stack(
-      children: <Widget>[
-        ClipPath(
-          clipper: UpperClipper(),
-          child: Container(
-            height: size.getWidthPx(240),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [colorCurve, colorCurveSecondary],
-              ),
-            ),
-          ),
-        ),
-        Column(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: size.getWidthPx(36)),
-              child: Column(
-                children: <Widget>[
-                  titleWidget(),
-                  SizedBox(height: size.getWidthPx(10)),
-                  upperBoxCard(),
-                ],
-              ),
-            ),
-            leftAlignText(
-                text: "",
-                leftPadding: size.getWidthPx(16),
-                textColor: textPrimaryColor,
-                fontSize: 16.0),
-//            HorizontalList(
-//              children: <Widget>[
-//                for (int i = 0; i < premiumList.length; i++)
-//                  propertyCard(premiumList[i])
-//              ],
-//            ),
-            leftAlignText(
-                text: "",
-                leftPadding: size.getWidthPx(16),
-                textColor: textPrimaryColor,
-                fontSize: 16.0),
-//            HorizontalList(
-//              children: <Widget>[
-//                for (int i = 0; i < premiumList.length; i++)
-//                  propertyCard(premiumList.reversed.toList()[i])
-//
-//              ],
-//            )
-            RaisedButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Firebase()));
-                print("Hello");
-              },
-              elevation: 8.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              padding: EdgeInsets.all(size.getWidthPx(12)),
-              child: Text(
-                "Show Time Table",
-                style: TextStyle(
-                    fontFamily: 'Exo2', color: Colors.white, fontSize: 15.0),
-              ),
-              color: Color.fromRGBO(97, 10, 165, 0.8),
-            )
-          ],
-        ),
-      ],
-    );
-  }
-
-  Center titleWidget() {
-    return Center(
-      child: Text("\t\nWelcome, Student\nManage your attendance",
-          style: TextStyle(
-              fontFamily: 'Exo2',
-              fontSize: 24.0,
-              fontWeight: FontWeight.w900,
-              color: Colors.white)),
-    );
-  }
-
-  Card upperBoxCard() {
-    return Card(
-        elevation: 4.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        margin: EdgeInsets.symmetric(
-            horizontal: size.getWidthPx(20), vertical: size.getWidthPx(16)),
-        borderOnForeground: true,
-        child: Container(
-          height: size.getWidthPx(150),
-          child: Column(
-            children: <Widget>[
-              _searchWidget(),
-              RaisedButton(
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(
-                          builder: (context) => markAttendance()));
-                  print("Hello");
-                },
-                elevation: 8.0,
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(30.0)),
-                padding: EdgeInsets.all(size.getWidthPx(6)),
-                child: Text(
-                  "Mark Attendance",
-                  style: TextStyle(
-                      fontFamily: 'Exo2', color: Colors.white, fontSize: 15.0),
-                ),
-                color: Color.fromRGBO(97, 10, 165, 0.8),
-              ),
-              leftAlignText(
-                  text: "Upcoming Classes :",
-                  leftPadding: size.getWidthPx(16),
-                  textColor: textPrimaryColor,
-                  fontSize: 16.0),
-              HorizontalList(
-                children: <Widget>[
-                  for(int i = 0; i < citiesList.length; i++)
-                    buildChoiceChip(i, citiesList[i])
-                ],
-              ),
-            ],
-          )
-        ));
-
-  }
-
-
-  Widget _searchWidget() {
-    return Container(child: Center(child: Text("\nComputer Networks(UCS065)",
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-      textAlign: TextAlign.center,)));
-  }
-
-
-  Padding leftAlignText({text, leftPadding, textColor, fontSize, fontWeight}) {
-    return Padding(
-      padding: EdgeInsets.only(left: leftPadding),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(text ?? "",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                fontFamily: 'Exo2',
-                fontSize: fontSize,
-                fontWeight: fontWeight ?? FontWeight.w500,
-                color: textColor)),
-      ),
-    );
-  }
-
-
-//  Card propertyCard(Property property) {
-//    return Card(
-//        elevation: 4.0,
-//        margin: EdgeInsets.all(8),
-//        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-//        borderOnForeground: true,
-//        child: Container(
-//            height: size.getWidthPx(150),
-//            width: size.getWidthPx(170),
-//            child: Column(
-//              crossAxisAlignment: CrossAxisAlignment.stretch,
-//              children: <Widget>[
-//                ClipRRect(
-//                    borderRadius: BorderRadius.only(
-//                        topLeft: Radius.circular(12.0),
-//                        topRight: Radius.circular(12.0)),
-//                    child: Image.asset('assets/${property.image}',
-//                        fit: BoxFit.fill)),
-//                SizedBox(height: size.getWidthPx(8)),
-//                leftAlignText(
-//                    text: property.propertyName,
-//                    leftPadding: size.getWidthPx(8),
-//                    textColor: colorCurve,
-//                    fontSize: 14.0),
-//                leftAlignText(
-//                    text: property.propertyLocation,
-//                    leftPadding: size.getWidthPx(8),
-//                    textColor: Colors.black54,
-//                    fontSize: 12.0),
-//                SizedBox(height: size.getWidthPx(4)),
-//                leftAlignText(
-//                    text: property.propertyPrice,
-//                    leftPadding: size.getWidthPx(8),
-//                    textColor: colorCurve,
-//                    fontSize: 14.0,
-//                    fontWeight: FontWeight.w800),
-//              ],
-//            )));
-//  }
-
-  Padding buildChoiceChip(index, chipName) {
-    return Padding(
-      padding: EdgeInsets.only(left: size.getWidthPx(8)),
-      child: ChoiceChip(
-        backgroundColor: backgroundColor,
-        selectedColor: colorCurve,
-        labelStyle: TextStyle(
-            fontFamily: 'Exo2',
-            color:
-            (_selectedIndex == index) ? backgroundColor : textPrimaryColor),
-        elevation: 4.0,
-        padding: EdgeInsets.symmetric(
-            vertical: size.getWidthPx(4), horizontal: size.getWidthPx(12)),
-        selected: (_selectedIndex == index) ? true : false,
-        label: Text(chipName),
-        onSelected: (selected) {
-          if (selected) {
-            setState(() {
-              _selectedIndex = index;
-            });
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor:
+          colorCurveSecondary, //or set color with: Color(0xFF0000FF)
+    ));
+    return StreamBuilder(
+        stream:
+            Firestore.instance.collection('users').document(email).snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return new Text("Loading");
           }
-        },
+          var userDocument = snapshot.data;
+          return new Scaffold(
+            drawer: Drawer(
+              child: ListView(
+                // Important: Remove any padding from the ListView.
+                padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                children: <Widget>[
+                  new SizedBox(
+                    height: 170.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: new DrawerHeader(
+                          decoration: new BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: <Color>[
+                                    colorCurve,
+                                    colorCurveSecondary
+                                  ]),
+                              image: DecorationImage(
+                                image:
+                                    AssetImage("assets/icons/logo_splash.png"),
+                                fit: BoxFit.scaleDown,
+                              )),
+                          child:
+                              new Text('', style: TextStyle(color: colorCurve)),
+                          margin: EdgeInsets.fromLTRB(0.0, 24, 0, 20),
+                          padding: EdgeInsets.fromLTRB(0.0, 0, 0, 0)),
+                    ),
+                  ),
+                  CustomListTile(
+                      Icons.person,
+                      "Profile",
+                      () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfilePage())),
+                          }),
+                  CustomListTile(
+                      Icons.forum,
+                      "Forum",
+                      () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage())),
+                          }),
+                  CustomListTile(
+                      Icons.dvr,
+                      "Cotton News",
+                      () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NewsPage())),
+                          }),
+                  CustomListTile(
+                      Icons.phone,
+                      "Contact Us",
+                      () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage())),
+                          }),
+                  CustomListTile(
+                      Icons.exit_to_app,
+                      "Log Out",
+                      () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => LoginPage())),
+                          }),
+                ],
+              ),
+            ),
+            appBar: AppBar(
+              title: Center(child: Text("Dashboard")),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Icon(Icons.share),
+                ),
+              ],
+              backgroundColor: colorCurve,
+              elevation: 50.0,
+            ),
+            body: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child:
+                      latestText("Welcome " + userDocument["Username"] + "!"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25, 0, 25, 25),
+                  child: Card(
+                    color: colorCurveSecondary,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(40, 20, 40, 20),
+                          child: Center(
+                              child: Column(
+                            children: <Widget>[
+                              Text(
+                                "You are in: ",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                child: Text(userDocument["Location"],
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.white)),
+                              )
+                            ],
+                          )),
+                        ),
+                        Divider(
+                          thickness: 2,
+                          color: Colors.white,
+                        ),
+                        ButtonBar(
+                          children: <Widget>[
+                            FlatButton(
+                              child: const Text(
+                                'UPDATE LOCATION',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              onPressed: getLocation,
+                            ),
+                            FlatButton(
+                              child: const Text('',
+                                  style: TextStyle(color: Colors.white)),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginPage()));
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                RaisedButton(
+                  padding: const EdgeInsets.fromLTRB(78, 14, 78, 14),
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20.0)),
+                  color: colorCurveSecondary,
+                  onPressed: () {},
+                  child: new Text(
+                    "Check Future Cotton Prices",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+}
 
-      ),
+GradientText latestText(String text) {
+  return GradientText(text,
+      gradient: LinearGradient(colors: [
+        Color.fromRGBO(97, 6, 165, 1.0),
+        Color.fromRGBO(45, 160, 240, 1.0)
+      ]),
+      style: TextStyle(
+          fontFamily: 'Exo2', fontSize: 24, fontWeight: FontWeight.bold));
+}
 
+class CustomListTile extends StatelessWidget {
+  IconData icon;
+  String text;
+  Function onTap;
+
+  CustomListTile(this.icon, this.text, this.onTap);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: InkWell(
+          splashColor: colorCurveSecondary,
+          onTap: onTap,
+          child: Container(
+            height: 60,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(icon),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        text,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                if (icon != null) Icon(Icons.arrow_forward_ios)
+              ],
+            ),
+          )),
     );
   }
-
 }

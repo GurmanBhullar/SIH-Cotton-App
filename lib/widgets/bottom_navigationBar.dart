@@ -45,8 +45,8 @@ class _BottomNavBarState extends State<BottomNavBar>
         ),
         BottomNavigationBarItem(
           backgroundColor: Colors.grey.shade50,
-          icon: Icon(Icons.search),
-          title: Text('Search', style: TextStyle(fontFamily: 'Exo2')),
+          icon: Icon(Icons.shopping_cart),
+          title: Text('Market', style: TextStyle(fontFamily: 'Exo2')),
         ),
         BottomNavigationBarItem(
           backgroundColor: Colors.grey.shade50,
@@ -56,7 +56,7 @@ class _BottomNavBarState extends State<BottomNavBar>
         BottomNavigationBarItem(
           backgroundColor: Colors.grey.shade50,
           icon: Icon(Icons.settings),
-          title: Text('Setting', style: TextStyle(fontFamily: 'Exo2')),
+          title: Text('Settings', style: TextStyle(fontFamily: 'Exo2')),
         ),
       ],
     );

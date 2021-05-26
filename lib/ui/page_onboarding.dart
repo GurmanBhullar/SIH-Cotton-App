@@ -19,7 +19,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Screen  size;
 
   final List<Widget> _pages = [
-    IntroPage("assets/onboard_1.png", "Welcome to Present!",
+    IntroPage("assets/onboard_1.png", "Welcome to CottN!",
         "A one stop application for managing all your attendance records."),
     IntroPage("assets/onboard_3.png", "One touch attendance",
         "Marking your attendace was never easier. \n \n No more wasting time on manual attendance."),

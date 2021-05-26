@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_ui_collections/widgets/bottom_navigationBar.dart';
 import 'dart:math';
 import '../main.dart';
 import 'page_coming_soon.dart';
 import 'page_login.dart';
 import 'page_profile.dart';
+import 'package:flutter_ui_collections/utils/utils.dart';
 import 'page_search.dart';
 import 'page_settings.dart';
 import 'page_signup.dart';
 
 class HomePage extends StatefulWidget {
+  String email;
+  String location;
+  HomePage({this.email, this.location});
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(email, location);
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+  String email;
+  String location;
+  _HomePageState(this.email, this.location);
   int currentTab = 0;
   PageController pageController;
-
   _changeCurrentTab(int tab) {
     //Changing tabs from BottomNavigationBar
     setState(() {
@@ -35,11 +42,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor:
+          colorCurveSecondary, //or set color with: Color(0xFF0000FF)
+    ));
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
           body: bodyView(currentTab),
-          bottomNavigationBar: BottomNavBar(changeCurrentTab: _changeCurrentTab)),
+          bottomNavigationBar:
+              BottomNavBar(changeCurrentTab: _changeCurrentTab)),
     );
   }
 
@@ -49,7 +61,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     switch (currentTab) {
       case 0:
         //Dashboard Page
-        tabView = [SearchPage()];
+        tabView = [SearchPage(email: email)];
         break;
       case 1:
         //Search Page
@@ -57,7 +69,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         break;
       case 2:
         //Profile Page
-        tabView = [ProfilePage()];
+        tabView = [ProfilePage(email: email)];
         break;
       case 3:
         //Setting Page

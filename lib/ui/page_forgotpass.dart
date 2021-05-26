@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_collections/widgets/widgets.dart';
 import 'package:flutter_ui_collections/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PageForgotPassword extends StatefulWidget {
   @override
@@ -12,6 +14,7 @@ class _PageForgotPasswordState extends State<PageForgotPassword> {
   bool _autoValidate = false;
   String _email;
   bool isLoading = false;
+  TextEditingController _emailverify = TextEditingController();
 
   Screen size;
 
@@ -104,6 +107,7 @@ class _PageForgotPasswordState extends State<PageForgotPassword> {
 
   BoxField _emailWidget() {
     return BoxField(
+      controller: _emailverify,
       hintText: "Enter email",
       lableText: "Email",
       obscureText: false,
@@ -140,8 +144,9 @@ class _PageForgotPasswordState extends State<PageForgotPassword> {
         ),
         color: colorCurve,
         onPressed: () {
+          FirebaseAuth.instance.sendPasswordResetEmail(email: _emailverify.text);
           // Validate Email First
-          _validateInputs();
+
         },
       ),
     );

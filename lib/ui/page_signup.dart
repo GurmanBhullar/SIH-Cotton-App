@@ -1,11 +1,13 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter_ui_collections/ui/page_login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ui_collections/utils/utils.dart';
 import 'package:flutter_ui_collections/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'page_home.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter_ui_collections/Teacher-page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
+  TextEditingController _contController = TextEditingController();
   FocusNode _nameFocusNode = FocusNode();
   FocusNode _emailFocusNode = FocusNode();
   FocusNode _passFocusNode = FocusNode();
@@ -28,9 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    size = Screen(MediaQuery
-        .of(context)
-        .size);
+    size = Screen(MediaQuery.of(context).size);
 
     return Scaffold(
         backgroundColor: backgroundColor,
@@ -55,7 +56,10 @@ class _SignUpPageState extends State<SignUpPage> {
                       Row(
                         children: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.arrow_back, color: colorCurve,),
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: colorCurve,
+                            ),
                             onPressed: () => Navigator.pop(context, false),
                           ),
                           SizedBox(width: size.getWidthPx(10)),
@@ -63,7 +67,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         ],
                       ),
                       SizedBox(height: size.getWidthPx(10)),
-
                       SizedBox(height: size.getWidthPx(30)),
                       registerFields()
                     ]),
@@ -90,7 +93,7 @@ class _SignUpPageState extends State<SignUpPage> {
 //  }
 
   GradientText _signUpGradientText() {
-    return GradientText('Login as Teacher',
+    return GradientText('Sign Up',
         gradient: LinearGradient(colors: [
           Color.fromRGBO(97, 6, 165, 1.0),
           Color.fromRGBO(45, 160, 240, 1.0)
@@ -99,28 +102,28 @@ class _SignUpPageState extends State<SignUpPage> {
             fontFamily: 'Exo2', fontSize: 36, fontWeight: FontWeight.bold));
   }
 
-//  BoxField _nameWidget() {
-//    return BoxField(
-//        controller: _nameController,
-//        focusNode: _nameFocusNode,
-//        hintText: "Enter Name",
-//        lableText: "Name",
-//        obscureText: false,
-//        onSaved: (String val) {
-//          _name = val;
-//        },
-//        onFieldSubmitted: (String value) {
-//          FocusScope.of(context).requestFocus(_emailFocusNode);
-//        },
-//        icon: Icons.person,
-//        iconColor: colorCurve);
-//  }
+  BoxField _nameWidget() {
+    return BoxField(
+        controller: _nameController,
+        focusNode: _nameFocusNode,
+        hintText: "Enter Name",
+        lableText: "Name",
+        obscureText: false,
+        onSaved: (String val) {
+          _name = val;
+        },
+        onFieldSubmitted: (String value) {
+          FocusScope.of(context).requestFocus(_emailFocusNode);
+        },
+        icon: Icons.person,
+        iconColor: colorCurve);
+  }
 
   BoxField _emailWidget() {
     return BoxField(
         controller: _emailController,
         focusNode: _emailFocusNode,
-        hintText: "Enter Teacher ID",
+        hintText: "Enter Email ID",
         lableText: "Email",
         obscureText: false,
         onSaved: (String val) {
@@ -147,21 +150,34 @@ class _SignUpPageState extends State<SignUpPage> {
         iconColor: colorCurve);
   }
 
+  BoxField _contWidget() {
+    return BoxField(
+        controller: _contController,
+        focusNode: _passFocusNode,
+        hintText: "Enter Contact",
+        lableText: "Phone No.",
+        obscureText: false,
+        icon: Icons.person,
+        onSaved: (String val) {
+          _password = val;
+        },
+        iconColor: colorCurve);
+  }
 
-//  BoxField _confirmPasswordWidget() {
-//    return BoxField(
-//        controller: _confirmPasswordController,
-//        focusNode: _confirmPassFocusNode,
-//        hintText: "Enter Confirm Password",
-//        lableText: "Confirm Password",
-//        obscureText: true,
-//        icon: Icons.lock_outline,
-//        onSaved: (String val) {
-//          _confirmPassword = val;
-//        },
-//        iconColor: colorCurve);
-//  }
-//
+  BoxField _confirmPasswordWidget() {
+    return BoxField(
+        controller: _confirmPasswordController,
+        focusNode: _confirmPassFocusNode,
+        hintText: "Enter Confirm Password",
+        lableText: "Confirm Password",
+        obscureText: true,
+        icon: Icons.lock_outline,
+        onSaved: (String val) {
+          _confirmPassword = val;
+        },
+        iconColor: colorCurve);
+  }
+
   Container _signUpButtonWidget() {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -169,11 +185,11 @@ class _SignUpPageState extends State<SignUpPage> {
       width: size.getWidthPx(200),
       child: RaisedButton(
         elevation: 8.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         padding: EdgeInsets.all(size.getWidthPx(12)),
         child: Text(
-          "LOGIN",
+          "Sign Up",
           style: TextStyle(
               fontFamily: 'Exo2', color: Colors.white, fontSize: 20.0),
         ),
@@ -197,16 +213,18 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  registerFields() =>
-      Container(
+  registerFields() => Container(
         child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                _nameWidget(),
+                _contWidget(),
                 _emailWidget(),
                 _passwordWidget(),
+                _confirmPasswordWidget(),
                 SizedBox(
                   height: 20,
                 ),
@@ -215,23 +233,49 @@ class _SignUpPageState extends State<SignUpPage> {
             )),
       );
 
-
   Future<void> signIn() async {
     final formState = _formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      try {
-        AuthResult user = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => teacherPage()));
-      } catch (e) {
-        Fluttertoast.showToast(msg: "Wrong Login Credentials",
-            toastLength: Toast.LENGTH_LONG,
-            backgroundColor: Colors.black87,
-            textColor: Colors.white);
-        print(e.message);
+    if (_passwordController.text == _confirmPasswordController.text) {
+      if (formState.validate()) {
+        formState.save();
+        try {
+          Fluttertoast.showToast(
+              msg: "Fetching Location", toastLength: Toast.LENGTH_LONG);
+          AuthResult user = await FirebaseAuth.instance
+              .createUserWithEmailAndPassword(
+                  email: _emailController.text,
+                  password: _passwordController.text);
+          Position position = await Geolocator()
+              .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+          List<Placemark> p = await Geolocator()
+              .placemarkFromCoordinates(position.latitude, position.longitude);
+          Placemark place = p[0];
+          String city = place.locality;
+          Firestore.instance
+              .collection('users')
+              .document(_emailController.text)
+              .setData({
+            'Username': _nameController.text,
+            'Phone': _contController.text,
+            'Location': city
+          });
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => LoginPage()));
+        } catch (e) {
+          Fluttertoast.showToast(
+              msg: "Wrong Credentials",
+              toastLength: Toast.LENGTH_LONG,
+              backgroundColor: Colors.black87,
+              textColor: Colors.white);
+          print(e.message);
+        }
       }
+    } else {
+      Fluttertoast.showToast(
+          msg: "Passwords Dont Match",
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.black87,
+          textColor: Colors.white);
     }
   }
 }

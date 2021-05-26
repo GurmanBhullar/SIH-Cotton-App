@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ui_collections/attdn.dart';
+//import 'package:flutter_ui_collections/attdn.dart';
 import 'package:flutter_ui_collections/utils/utils.dart';
 import 'package:flutter_ui_collections/widgets/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,11 +10,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'page_forgotpass.dart';
 import 'page_home.dart';
 import 'page_signup.dart';
-import 'page_search.dart';
+import 'package:geolocator/geolocator.dart';
+
+///mport 'page_search.dart';
 
 class LoginPage extends StatefulWidget {
-
-
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -32,9 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    size = Screen(MediaQuery
-        .of(context)
-        .size);
+    size = Screen(MediaQuery.of(context).size);
 
     return Scaffold(
         backgroundColor: backgroundColor,
@@ -46,30 +44,25 @@ class _LoginPageState extends State<LoginPage> {
               statusBarIconBrightness: Brightness.dark,
               systemNavigationBarIconBrightness: Brightness.light,
               systemNavigationBarColor: backgroundColor),
-
           child: Container(
             color: Colors.white,
             child: SafeArea(
               top: true,
               bottom: false,
-              child: Stack(
-                  fit: StackFit.expand,
-                  children: <Widget>[
-
-
-              ClipPath(
-              clipper: BottomShapeClipper(),
-              child: Container(
-                  color: colorCurve,
-                  )),
-                    SingleChildScrollView(
+              child: Stack(fit: StackFit.expand, children: <Widget>[
+                ClipPath(
+                    clipper: BottomShapeClipper(),
+                    child: Container(
+                      color: colorCurve,
+                    )),
+                SingleChildScrollView(
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: size.getWidthPx(20),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: size.getWidthPx(20),
                         vertical: size.getWidthPx(20)),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-
                           _loginGradientText(),
                           SizedBox(height: size.getWidthPx(10)),
                           _textAccount(),
@@ -87,16 +80,17 @@ class _LoginPageState extends State<LoginPage> {
   RichText _textAccount() {
     return RichText(
       text: TextSpan(
-
-          text: "For Teacher Account ",
+          text: "Not having Account : ",
           children: [
             TextSpan(
-              style: TextStyle(color: Colors.deepOrange,
+              style: TextStyle(
+                  color: Colors.deepOrange,
                   fontSize: 18,
                   fontWeight: FontWeight.bold),
               text: 'CLICK HERE.\n',
               recognizer: TapGestureRecognizer()
-                ..onTap = () =>  Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage())),
+                ..onTap = () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SignUpPage())),
             )
           ],
           style: TextStyle(
@@ -105,12 +99,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   GradientText _loginGradientText() {
-    return GradientText('Login as Student',
+    return GradientText('WELCOME',
         gradient: LinearGradient(colors: [
           Color.fromRGBO(97, 6, 165, 1.0),
           Color.fromRGBO(45, 160, 240, 1.0)
         ]),
-        style: TextStyle(fontFamily: 'Exo2',fontSize: 36, fontWeight: FontWeight.bold));
+        style: TextStyle(
+            fontFamily: 'Exo2', fontSize: 36, fontWeight: FontWeight.bold));
   }
 
   BoxField _emailWidget() {
@@ -156,14 +151,14 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.all(size.getWidthPx(12)),
         child: Text(
           "LOGIN",
-          style: TextStyle(fontFamily: 'Exo2',color: Colors.white, fontSize: 20.0),
+          style: TextStyle(
+              fontFamily: 'Exo2', color: Colors.white, fontSize: 20.0),
         ),
         color: colorCurve,
         onPressed: () {
           signIn();
           //Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
           // Going to DashBoard
-
         },
       ),
     );
@@ -183,11 +178,10 @@ class _LoginPageState extends State<LoginPage> {
 //    );
 //  }
 
-  GestureDetector socialCircleAvatar(String assetIcon,VoidCallback onTap) {
+  GestureDetector socialCircleAvatar(String assetIcon, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: CircleAvatar(
-
         maxRadius: size.getWidthPx(24),
         backgroundColor: Colors.transparent,
         child: Image.asset(assetIcon),
@@ -195,13 +189,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
-  loginFields() =>
-      Container(
+  loginFields() => Container(
         child: Form(
             key: _formKey,
             child: Column(
-
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -211,60 +202,54 @@ class _LoginPageState extends State<LoginPage> {
                 GestureDetector(
                     onTap: () {
                       //Navigate to Forgot Password Screen...
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PageForgotPassword()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PageForgotPassword()));
                     },
                     child: Padding(
                       padding: EdgeInsets.only(right: size.getWidthPx(24)),
                       child: Align(
                           alignment: Alignment.centerRight,
                           child: Text("Forgot Password?\n",
-                              style: TextStyle(fontFamily: 'Exo2',fontSize: 16.0))),
+                              style: TextStyle(
+                                  fontFamily: 'Exo2', fontSize: 16.0))),
                     )),
                 SizedBox(height: size.getWidthPx(8)),
                 _loginButtonWidget(),
                 SizedBox(height: size.getWidthPx(28)),
 
-                Text("", style: TextStyle(
-                    fontFamily: 'Exo2', fontSize: 16.0, color: Colors.grey),
+                Text(
+                  "",
+                  style: TextStyle(
+                      fontFamily: 'Exo2', fontSize: 16.0, color: Colors.grey),
                 ),
                 SizedBox(height: size.getWidthPx(12)),
                 //_socialButtons()
-
               ],
             )),
       );
 
-
-  Future<void> signIn() async{
+  Future<void> signIn() async {
     final formState = _formKey.currentState;
-    if(formState.validate()){
+    if (formState.validate()) {
       formState.save();
       try {
         AuthResult user = await FirebaseAuth.instance
             .signInWithEmailAndPassword(email: _email, password: _password);
-        Firestore.instance.collection('users').document(_email).setData(
-            {'Name': _email, 'Subject': '',});
-
-
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
-      }catch(e){
-        Fluttertoast.showToast(msg: "Wrong Login Credentials",
+            context,
+            new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    new HomePage(email: _email)));
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: "Wrong Credentials",
             toastLength: Toast.LENGTH_LONG,
             backgroundColor: Colors.black87,
             textColor: Colors.white);
         print(e.message);
       }
-
-
-
-
     }
   }
-
-
-
-
 }
-
-
