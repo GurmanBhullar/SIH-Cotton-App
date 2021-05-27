@@ -1,56 +1,24 @@
-# flutter_ui_collections
+# Cotton Price Prediction
+## Features:
+* Location-based virtual marketplace for buyers to directly buy cotton from regional farmers, eliminating the role of middlemen.
+* A discussion forum for farmers and buyers to share experiences and concerns regarding cotton. 
+* NLP-based chatbot for answering enquiries on cotton cultivation, disease prevention, irrigation methods etc.
+* A Wiki/Knowledge Base for Cotton Related Industries containing all information about cotton, its industrial uses, crop cycle, pests, diseases, available market solutions, businesses (offering different services like storage, processing, etc. in your locality), etc.
+* Push notifications for receiving updates on news that may majorly impact cotton cultivation
 
+## Use Case:
+* Our prediction takes into account changes in external factors- temperature, import and export prices.
+* Our pricing model provides a recommended selling price range, thus increasing profits of farmers through optimal pricing and enabling them to choose a price, thereby providing them flexibility of choice.
+* Our product is targeted towards farmers growing various varieties of cotton and having farmland of different areas & locations across the country.
+* Elimination of middlemen in cotton trade, resulting in farmers receiving maximum profit.
+* Efficiently determining the supply, demand and trade of cotton within the country as well as across the borders. 
+
+## Technologies used:
+* Flutter for Application
+* Firebase as database
+* SRIMA Model for Time Series
 
 ## Screenshots
-| Splash | Onboarding | Login | Sign Up
-|-----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------
-|<img src="screenshots/page_splash.jpg" height="400em" /> | <img src="screenshots/onboarding.gif" height="400em" /> | <img src="screenshots/page_login.jpg" height="400em" /> | <img src="screenshots/page_signup.jpg" height="400em"/>
-
-| Forgot Password | Dashboard | Profile | Setting
-|-----------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------
-|<img src="screenshots/page_forgot_password.jpg" height="400em" /> |<img src="screenshots/page_dashboard.jpg" height="400em" /> | <img src="screenshots/page_profile.jpg" height="400em" />|<img src="screenshots/page_settings.jpg" height="400em" />
-
-
-
-# Show some :heart: and star the repo to support the project.
-
-## Contribute
-1. Fork the the project
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Make required changes and commit (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create new Pull Request
-
-
-## Created By
-
-[Harsh Bhavsar](https://github.com/iharshb) ([@harshu_719](https://www.twitter.com/harshu_719)) 
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
-
-
-### The MIT License
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
-`Copyright (c) 2019 Harsh Bhavsar`
-
-`Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions: `
-
-`The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software. `
-
-`THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE. `
-
-
+![image](https://user-images.githubusercontent.com/40751910/119801885-b48adc00-befb-11eb-9df3-142114183d9d.png)
+![image](https://user-images.githubusercontent.com/40751910/119801904-b94f9000-befb-11eb-9d89-e4ed82ff53b0.png)
 
